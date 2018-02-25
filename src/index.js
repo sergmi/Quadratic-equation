@@ -1,51 +1,14 @@
 module.exports = function solveEquation(equation) {
-	let count = 0;	
-	let pattern = /^\-/;
-	let isMinus = pattern.test(equation); 	
-	let mas = equation.match(/\d+/g);
-	let figure_1 = eval(mas[0]);
-	let figure_2 = eval(mas[2])/figure_1;
-	let figure_3 = eval(mas[3])/figure_1;
 	
-	figure_1 /= figure_1;	
-	equation = equation.replace(mas[0],String(figure_1)).replace(mas[2],String(figure_2)).replace(mas[3],String(figure_3));
+	let pattern = /\-?\s?\d+/g;
+	let contejner = equation.match(pattern);
+	let figure_1 = eval(contejner[0]);	
+	let figure_2 = eval(contejner[2])/figure_1;
+	let figure_3 = eval(contejner[3])/figure_1;
+	let discriminant = Math.pow(figure_2,2) - 4 * figure_3;
+	let value_1 = ( - figure_2 - Math.sqrt(discriminant)) / 2;
+	let value_2 = ( - figure_2 + Math.sqrt(discriminant)) / 2;
 	
-	let isEquation = function (k){return eval(equation.replace(/x\^2/,k*k).replace(/x/,k));}
-	let j, mul;
-	let result = [];
-	let value, item, step, prev;
-	
-	let findResult = function(m){
-		count+=1;
-		if(count>110){return;}
-		
-		value = isEquation(j);	
-		if(value===0||step<1){result.push(j); return;}
-		prev = item;
-		item = Math.abs(value)===value;
-		
-		if(!prev){prev = item;}
-		if(item!==prev){
-			step/=10;
-			item = null;
-		}
-		
-		if (value > 0){	j+=step*m;}			
-		else if(value < 0){	j-=step*m;}
-
-		findResult(m);		
-	}	
-	
-	j=-5000000;	
-	step = 1000000;	
-	mul = -j/Math.abs(j);
-	if(isMinus){mul=-mul;}
-	findResult(mul);	
-	
-	j=5000000;	
-	step = 1000000;	
-	mul = -j/Math.abs(j);
-	if(isMinus){mul=-mul;}
-	findResult(mul);
+	let result = [value_1, value_2];	
 	return result;
 }
